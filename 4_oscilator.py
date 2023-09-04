@@ -33,8 +33,7 @@ def hamiltonian(n, m, k, lam, om, h):
     Args:
         n (1darray): _description_
     """
-    # A = np.vectorize(a)
-    # A_dag = np.vectorize(a_dag)
+
     p_x = complex(0,math.sqrt(h*m*om/2))*(a_dag(n)-a(n))
     x = math.sqrt(h/(2*m*om))*(a_dag(n)+a(n))
     H = p_x**2/2*m + k*x + lam*x**4
