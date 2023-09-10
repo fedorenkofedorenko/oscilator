@@ -1,6 +1,5 @@
 import numpy as np
 from scipy.linalg import eigvalsh
-import math
 import cmath
 
 
@@ -27,7 +26,7 @@ def a_dag(n):
 
 def hamiltonian(n, lam, om, ):
     """
-
+    H_nm
     Args:
         n (1darray): _description_
     """
