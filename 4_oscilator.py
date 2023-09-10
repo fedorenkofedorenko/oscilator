@@ -1,4 +1,3 @@
-import scipy as sp
 import numpy as np
 from scipy.linalg import eigvalsh
 import math
@@ -7,7 +6,7 @@ import cmath
 
 def a(n): 
     """
-    Boson creation operator 
+    Boson annihilation operator 
 
     Args:
         n (1darray): ...
@@ -18,7 +17,7 @@ def a(n):
 
 def a_dag(n):
     """
-    Boson annihilation operator 
+    Boson creation operator 
 
     Args:
         n (1darray): ...
