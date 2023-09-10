@@ -32,7 +32,7 @@ def hamiltonian(n, lam, om, ):
     Args:
         n (1darray): _description_
     """
-    H = -om ** 2/2*((a_dag(n)**2+a(n)**2+1)/(a_dag(n)+a(n))) + 1/4*om**2*(a_dag(n)**2+a(n)**2+1)+lam/(16*om**4)*(a_dag(n)**2+a(n)**2+1)**2
+    H = -om ** 2/2*((a_dag(n)**2+a(n)**2-1)/(a_dag(n)+a(n))) + 1/4*om**2*(a_dag(n)**2+a(n)**2+1)+lam/(16*om**4)*(a_dag(n)**2+a(n)**2+1)**2
     return H
 
 def matrix (n_r, step, lam, om):
@@ -53,4 +53,4 @@ def main(n_r, step,lam, om):
     v = eigenvalue(M)
     print (v)
 
-main([1,100],1, 0.6, 1)
+main([1,10],1, 1, 1)
