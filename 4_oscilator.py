@@ -1,10 +1,11 @@
 import scipy as sp
 import numpy as np
+from scipy.linalg import eigvalsh
 import math
 import cmath
 
 
-def a(n):
+def a(n): 
     """
     Boson creation operator 
 
@@ -12,9 +13,8 @@ def a(n):
         n (1darray): ...
     """
     print(n)
-    k = cmath.sqrt(n[1])
-    n[1] = n[1]-1
-    return k*n
+    k = cmath.sqrt(n[0])
+    return k
 
 def a_dag(n):
     """
@@ -23,38 +23,34 @@ def a_dag(n):
     Args:
         n (1darray): ...
     """
-    k = cmath.sqrt(n[1]+1)
-    n[1] = n[1]+1
-    return k*n
+    k = cmath.sqrt(n[0]+1)
+    return k
 
-def hamiltonian(n, m, k, lam, om, h):
+def hamiltonian(n, lam, om, ):
     """
 
     Args:
         n (1darray): _description_
     """
-
-    p_x = complex(0,math.sqrt(h*m*om/2))*(a_dag(n)-a(n))
-    x = math.sqrt(h/(2*m*om))*(a_dag(n)+a(n))
-    H = p_x**2/2*m + k*x + lam*x**4
-    print(H)
+    H = -om ** 2/2*((a_dag(n)**2+a(n)**2+1)/(a_dag(n)+a(n))) + 1/4*om**2*(a_dag(n)**2+a(n)**2+1)+lam/(16*om**4)*(a_dag(n)**2+a(n)**2+1)**2
     return H
 
-def matrix (n_r, step, m, k, lam, om, h):
-    A = np.empty(n_r)
+def matrix (n_r, step, lam, om):
+    A = np.empty((n_r[1],n_r[1]))
     for i in range(n_r[0], n_r[1],step):
         for j in range(n_r[0], n_r[1],step):
-            # print(np.array([i,j]),np.array([[j],[i]]) ) - vectors are OK
-            A[i,j]=np.array([[j],[i]])*hamiltonian(np.array([i,j]), m, k, lam, om, h)
+            # print(np.array([i,j]),np.array([[j],[i]]) ) #- vectors are OK
+            A[i, j] = hamiltonian(np.array([[j], [i]]), lam, om).real
     return A
 
 
 
-def eigenvalue ():
-    pass
+def eigenvalue (A):
+    vals = eigvalsh(A, subset_by_index= [0,1])
+    return vals
+def main(n_r, step,lam, om):
+    M = matrix(n_r, step, lam, om )
+    v = eigenvalue(M)
+    print (v)
 
-def main(n_r, step, m, k, lam, om, h):
-    M = matrix(n_r, step, m, k, lam, om, h)
-    print (M)
-
-main([0,4],1, 1, 1, 0.1, 1, 1)
+main([1,100],1, 0.6, 1)
