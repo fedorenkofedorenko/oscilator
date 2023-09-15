@@ -2,53 +2,53 @@ import numpy as np
 from scipy.linalg import eigvalsh
 import cmath
 
+def H_mn (n):
+    h_mn = 1/(2**(1/2))*(n+1/2)
+    return h_mn
 
-def a(n): 
-    """
-    Boson annihilation operator 
+def V (m,n, n_max, lam):
+    el = 0
+    if m == n+4:
+        if n<=n_max-4:
+            el+= ((n+1)*(n+2)*(n+3)*(n+4))**(1/2)
+    if m == n+2:
+        el+= n**2
+        if n<= n_max-2:
+            el+= ((n+n+1+n+2)*((n+1)*(n+2))**(1/2))
+        if n <= n_max-3:
+            el += ((n+3)*((n+1)*(n+2))**(1/2))
+    if m == n:
+        el+= n**2
+        if n>0:
+            el+= n*(n-1)
+        if n<n_max:
+            el+= 2*n*(n+1)+(n+1)**2
+        if n<= n_max-2:
+            el+=(n+1)*(n+2)
+    if m == n-2:
+        if n>=2:
+            el+= (n*(n-1))**(1/2)*(n-2+n-1+n)
+            if n< n_max :
+                el += (n*(n-1))**(1/2)*(n+1)
+    if m == n-4:
+        if n>=4:
+            el+= (n*(n-1)*(n-2)*(n-3))**(1/2)    
+    el*=lam*1/4
+    return el
 
-    Args:
-        n (1darray): ...
-    """
-    print(n)
-    k = cmath.sqrt(n[0])
-    return k
-
-def a_dag(n):
-    """
-    Boson creation operator 
-
-    Args:
-        n (1darray): ...
-    """
-    k = cmath.sqrt(n[0]+1)
-    return k
-
-def hamiltonian(n, lam, om, ):
-    """
-    H_nm
-    Args:
-        n (1darray): _description_
-    """
-    H = -om ** 2/2*((a_dag(n)**2+a(n)**2-1)/(a_dag(n)+a(n))) + 1/4*om**2*(a_dag(n)**2+a(n)**2+1)+lam/(16*om**4)*(a_dag(n)**2+a(n)**2+1)**2
+def matrix(n_max, lam):
+    H = np.zeros((n_max, n_max), dtype=float)
+    for i in range(0,n_max):
+        H[i,i] = float(H_mn(i))
+        for j in (1, n_max-1):
+            H[i, j] = float(H_mn(j) + V(i,j,n_max, lam))
     return H
 
-def matrix (n_r, step, lam, om):
-    A = np.empty((n_r[1],n_r[1]))
-    for i in range(n_r[0], n_r[1],step):
-        for j in range(n_r[0], n_r[1],step):
-            # print(np.array([i,j]),np.array([[j],[i]]) ) #- vectors are OK
-            A[i, j] = hamiltonian(np.array([[j], [i]]), lam, om).real
-    return A
-
-
-
-def eigenvalue (A):
-    vals = eigvalsh(A, subset_by_index= [0,1])
-    return vals
-def main(n_r, step,lam, om):
-    M = matrix(n_r, step, lam, om )
-    v = eigenvalue(M)
+def main(n_max, lam):
+    M = matrix(n_max, lam)
+    # M.tofile("matrix.dat", "    ")
+    v = eigvalsh(M, subset_by_index = [0,1])
+    v.tofile("eigenvalues_lam_"+str(lam)+".dat", "    ")
     print (v)
 
-main([1,10],1, 1, 1)
+main(500, 0.6)
